@@ -1,0 +1,9 @@
+.tool-card {
+  border: 1px solid #333;
+  padding: 15px;
+  width: 250px;
+  text-align: center;
+  border-radius: 8px;
+  background-color: #242424;
+  color: #e0e0e0;
+}

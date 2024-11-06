@@ -1,0 +1,22 @@
+version: '3'
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - CLIENT_ID=your_spotify_client_id
+      - CLIENT_SECRET=your_spotify_client_secret
+      - REDIRECT_URI=http://localhost:3000/callback
