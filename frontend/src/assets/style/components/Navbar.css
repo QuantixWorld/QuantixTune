@@ -6,7 +6,7 @@
   width: 80px;
   background-color: #181818;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
   padding: 10px;
   display: flex;
   flex-direction: column;

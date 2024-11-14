@@ -16,3 +16,34 @@ body {
 .button:hover {
   background-color: #33c7dd;
 }
+
+.coming_soon {
+  position: relative;
+  cursor: pointer;
+  color: gray;
+  cursor: default !important;
+}
+
+.coming_soon::after {
+  content: "Coming soon";
+  position: absolute;
+  bottom: 140%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  font-size: xx-small;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: normal;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.8em;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.coming_soon:hover::after {
+  opacity: 1;
+}

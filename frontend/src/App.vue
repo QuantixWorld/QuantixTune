@@ -1,12 +1,14 @@
 <template>
   <div id="app">
     <MainNavbar />
+    <MusicPlayer />
     <router-view />
   </div>
 </template>
 
 <script setup lang="ts">
 import MainNavbar from './components/tools/MainNavbar.vue'
+import MusicPlayer from './components/tools/MusicPlayer.vue'
 </script>
 
 <style>

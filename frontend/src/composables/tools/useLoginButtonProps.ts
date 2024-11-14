@@ -1,5 +1,3 @@
-import { getSpotifyAuthUrl } from '../../services/authService'
-
 export const login = () => {
-  window.location.href = getSpotifyAuthUrl()
+  window.location.href = 'http://localhost:3000/login'
 }

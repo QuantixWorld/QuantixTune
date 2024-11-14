@@ -17,13 +17,14 @@ const port = 3000;
 const app = express();
 
 app.use(cors({
-    origin: 'http://localhost:5173'
+    origin: 'http://localhost:5173',
+    credentials: true
 }));
 app.use(cookieParser());
 
 app.get('/login', function(req, res) {
     var state = generateRandomString(16);
-    var scope = 'user-read-private user-read-email user-read-playback-state';
+    var scope = 'user-read-private user-read-email user-read-playback-state user-modify-playback-state';
 
     res.redirect('https://accounts.spotify.com/authorize?' +
         queryString.stringify({
@@ -75,7 +76,7 @@ app.get('/callback', async function(req, res) {
                     'Authorization': 'Bearer ' + accessToken
                 }
             });
-
+	    
             const userId = userProfileResponse.data.id;
 
             await redis.hmset(`tokens:${userId}`, {
@@ -85,9 +86,9 @@ app.get('/callback', async function(req, res) {
             });
 
             await redis.expire(`tokens:${userId}`, 60 * 60 * 24 * 7);
-
+	    
             res.cookie('userId', userId, { httpOnly: true, sameSite: 'strict', secure: true });
-            res.redirect('http://localhost:3000/player');
+            res.redirect('http://localhost:5173/');
         } catch (error) {
             console.error('Error during token exchange: ', error);
             res.redirect('#' + 
@@ -101,10 +102,10 @@ app.get('/callback', async function(req, res) {
 
 app.get('/player', async (req, res) => {
     const userId = req.cookies.userId;
-
     try {
         await refreshTokenIfNeeded(userId);
         const tokens = await redis.hgetall(`tokens:${userId}`);
+        
         const response = await axios.get('https://api.spotify.com/v1/me/player', {
             headers: {
                 'Authorization': `Bearer ${tokens.accessToken}`,
@@ -117,6 +118,25 @@ app.get('/player', async (req, res) => {
         res.status(401).send('Unauthorized');
     }
 });
+
+app.put('/pause', async (req, res) => {
+    const userId = req.cookies.userId;
+    try {
+        await refreshTokenIfNeeded(userId);
+        const tokens = await redis.hgetall(`tokens:${userId}`);
+
+        await axios.put('https://api.spotify.com/v1/me/player/pause', 
+            {},
+            {
+            headers: {
+                'Authorization': `Bearer ${tokens.accessToken}`,
+            },
+        });
+    } catch (error) {
+        console.error('Error accessing Spotify API: ', error);
+        res.status(401).send('Unauthorized');
+    }
+})
 
 app.listen(port, () => {
     console.log(`App listening at http://localhost:${port}`)
