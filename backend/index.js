@@ -16,6 +16,7 @@ const port = 3000;
 
 const app = express();
 
+app.use(express.json());
 app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true
@@ -24,7 +25,7 @@ app.use(cookieParser());
 
 app.get('/login', function(req, res) {
     var state = generateRandomString(16);
-    var scope = 'user-read-private user-read-email user-read-playback-state user-modify-playback-state';
+    var scope = 'user-read-private user-read-email user-read-playback-state user-modify-playback-state user-library-read user-library-modify';
 
     res.redirect('https://accounts.spotify.com/authorize?' +
         queryString.stringify({
@@ -119,6 +120,29 @@ app.get('/player', async (req, res) => {
     }
 });
 
+app.get('/is-liked', async (req, res) => {
+    const userId = req.cookies.userId;
+    const ids = req.query.ids;
+
+    try {
+        await refreshTokenIfNeeded(userId);
+        const tokens = await redis.hgetall(`tokens:${userId}`);
+
+        const response = await  axios.get('https://api.spotify.com/v1/me/tracks/contains', {
+            params: { ids },
+            headers: {
+                'Authorization': `Bearer ${tokens.accessToken}`,
+            },
+        });
+
+        const isLiked = response.data[0];
+        res.status(200).send(isLiked);
+    } catch (error) {
+        console.error('Error checking liked tracks', error)
+        res.status(401).send('Unauthorized')
+    }
+})
+
 app.put('/pause', async (req, res) => {
     const userId = req.cookies.userId;
     try {
@@ -134,6 +158,165 @@ app.put('/pause', async (req, res) => {
         });
     } catch (error) {
         console.error('Error accessing Spotify API: ', error);
+        res.status(401).send('Unauthorized');
+    }
+});
+
+app.put('/play', async (req, res) => {
+    const userId = req.cookies.userId;
+
+    try {
+        await refreshTokenIfNeeded(userId);
+        const tokens = await redis.hgetall(`tokens:${userId}`);
+
+        await axios.put('https://api.spotify.com/v1/me/player/play', 
+            {},
+            {
+            headers: {
+                'Authorization': `Bearer ${tokens.accessToken}`,
+            },
+        });
+    } catch (error) {
+        console.error('Error accessing Spotify API: ', error);
+        res.status(401).send('Unauthorized');
+    }
+})
+
+app.post('/next', async (req, res) => {
+    const userId = req.cookies.userId;
+
+    try {
+        await refreshTokenIfNeeded(userId);
+        const tokens = await redis.hgetall(`tokens:${userId}`);
+
+        await axios.post('https://api.spotify.com/v1/me/player/next', 
+            {},
+            {
+            headers: {
+                'Authorization': `Bearer ${tokens.accessToken}`,
+            },
+        });
+    } catch (error) {
+        console.error('Error accessing Spotify API: ', error);
+        res.status(401).send('Unauthorized');
+    }
+})
+
+app.post('/previous', async (req, res) => {
+    const userId = req.cookies.userId;
+
+    try {
+        await refreshTokenIfNeeded(userId);
+        const tokens = await redis.hgetall(`tokens:${userId}`);
+
+        await axios.post('https://api.spotify.com/v1/me/player/previous', 
+            {},
+            {
+            headers: {
+                'Authorization': `Bearer ${tokens.accessToken}`,
+            },
+        });
+    } catch (error) {
+        console.error('Error accessing Spotify API: ', error);
+        res.status(401).send('Unauthorized');
+    }
+})
+
+app.put('/tracks', async (req, res) => {
+    const userId = req.cookies.userId;
+    const ids = req.body.ids;
+
+    try {
+        await refreshTokenIfNeeded(userId);
+        const tokens = await redis.hgetall(`tokens:${userId}`);
+
+        await axios.put('https://api.spotify.com/v1/me/tracks', { ids: ids }, {
+            headers: {
+                'Authorization': `Bearer ${tokens.accessToken}`,
+            },
+        })
+    } catch (error) {
+        console.error('Error saving tracks: ', error);
+        res.status(401).send('Unauthorized');
+    }
+})
+
+app.delete('/tracks', async (req, res) => {
+    const userId = req.cookies.userId;
+    const ids = req.body.ids;
+
+    try {
+        await refreshTokenIfNeeded(userId);
+        const tokens = await redis.hgetall(`tokens:${userId}`);
+
+        await axios.delete('https://api.spotify.com/v1/me/tracks', {
+            data: { ids: ids },
+            headers: {
+                'Authorization': `Bearer ${tokens.accessToken}`,
+            },
+        })
+    } catch (error) {
+        console.error('Error saving tracks: ', error);
+        res.status(401).send('Unauthorized');
+    }
+})
+
+app.put('/shuffle', async (req, res) => {
+    const userId = req.cookies.userId;
+    const state = req.query.state;
+
+    try {
+        await refreshTokenIfNeeded(userId);
+        const tokens = await redis.hgetall(`tokens:${userId}`);
+
+        await axios.put('https://api.spotify.com/v1/me/player/shuffle', {}, {
+            params: { state },
+            headers: {
+                'Authorization': `Bearer ${tokens.accessToken}`,
+            },
+        })
+    } catch (error) {
+        console.error('Error toggling shuffle: ', error);
+        res.status(401).send('Unauthorized');
+    }
+})
+
+app.put('/shuffle', async (req, res) => {
+    const userId = req.cookies.userId;
+    const state = req.query.state;
+
+    try {
+        await refreshTokenIfNeeded(userId);
+        const tokens = await redis.hgetall(`tokens:${userId}`);
+
+        await axios.put('https://api.spotify.com/v1/me/player/shuffle', {}, {
+            params: { state },
+            headers: {
+                'Authorization': `Bearer ${tokens.accessToken}`,
+            },
+        })
+    } catch (error) {
+        console.error('Error setting the repeat mode: ', error);
+        res.status(401).send('Unauthorized');
+    }
+})
+
+app.put('/repeat', async (req, res) => {
+    const userId = req.cookies.userId;
+    const state = req.query.state;
+
+    try {
+        await refreshTokenIfNeeded(userId);
+        const tokens = await redis.hgetall(`tokens:${userId}`);
+
+        await axios.put('https://api.spotify.com/v1/me/player/repeat', {}, {
+            params: { state },
+            headers: {
+                'Authorization': `Bearer ${tokens.accessToken}`,
+            },
+        })
+    } catch (error) {
+        console.error('Error setting the repeat mode: ', error);
         res.status(401).send('Unauthorized');
     }
 })
@@ -155,16 +338,17 @@ async function refreshTokenIfNeeded(userId) {
         const refreshOptions = {
             url: 'https://accounts.spotify.com/api/token',
             headers: {
-                'Authorization': 'Basic ' + Buffer.from(client_id + ':' + client_secret).toString('base64'),
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'content-type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Basic ' + Buffer.from(`${client_id}:${client_secret}`).toString('base64'),
             },
-            form: queryString.stringify({
+            data: queryString.stringify({
                 grant_type: 'refresh_token',
                 refresh_token: tokens.refreshToken,
             }),
+            json: true
         };
 
-        const refreshResponse = await axios.post(refreshOptions.url, refreshOptions.form, {
+        const refreshResponse = await axios.post(refreshOptions.url, refreshOptions.data, {
             headers: refreshOptions.headers,
         });
 

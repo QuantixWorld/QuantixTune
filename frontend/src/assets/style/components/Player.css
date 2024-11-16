@@ -41,6 +41,15 @@
   justify-content: center;
 }
 
+#track-icons {
+  height: 50px;
+  margin: 0 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
 #track-info p:first-child {
   font-weight: bold;
   margin: 0;
@@ -76,13 +85,15 @@
 }
 
 #player_buttons i,
-#tools i {
+#tools i,
+#track-icons i {
   cursor: pointer;
   transition: color 0.2s ease;
 }
 
 #player_buttons i:hover,
-#tools i:hover {
+#tools i:hover, 
+#track-icons i:hover {
   color: #1db9d2;
 }
 
@@ -136,4 +147,17 @@
   background-color: #1db9d2;
   border-radius: 2px;
   transition: width 0.2s ease;
+}
+
+.animated-glow {
+  animation: glow 1.5s infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 3px rgba(29, 185, 210, 0.5), 0 0 6px rgba(29, 185, 210, 0.3);
+  }
+  to {
+    text-shadow: 0 0 9px rgba(29, 185, 210, 0.7), 0 0 12px rgba(29, 185, 210, 0.5);
+  }
 }
