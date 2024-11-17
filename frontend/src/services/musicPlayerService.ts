@@ -138,3 +138,27 @@ export async function setRepeatState(state: string) {
     throw error
   }
 }
+
+export async function seekToPosition(position_ms: number) {
+  try {
+    await axios.put('http://localhost:3000/seek', {}, {
+      params: { position_ms },
+      withCredentials: true
+    })
+  } catch (error) {
+    console.error('Failed to seek to position: ', error)
+    throw error
+  }
+}
+
+export async function setPlaybackVolume(volume_percent: number) {
+  try {
+    await axios.put('http://localhost:3000/volume', {}, {
+      params: { volume_percent },
+      withCredentials: true
+    })
+  } catch (error) {
+    console.error('Failed to seek to position: ', error)
+    throw error
+  }
+}

@@ -139,7 +139,7 @@
   border-radius: 2px;
   margin: 0 10px;
   position: relative;
-  overflow: hidden;
+  cursor: pointer;
 }
 
 #progress {
@@ -147,6 +147,31 @@
   background-color: #1db9d2;
   border-radius: 2px;
   transition: width 0.2s ease;
+}
+
+.hover-circle {
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  background: #1db9d2;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+.hover-tooltip {
+  position: absolute;
+  bottom: 10px;
+  background: #333;
+  color: #fff;
+  font-size: 12px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 .animated-glow {

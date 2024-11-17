@@ -58,7 +58,7 @@
             cursor: !playerState.device.supports_volume ? 'default' : 'pointer'
           }"
         ></i>
-        <div id="volume">
+        <div id="volume" ref="volumeBarRef" @click="onVolumeBarClick">
           <div
             id="volume_percentage"
             :style="{ width: (playerState.device.supports_volume ? playerState.device.volume_percent : '0') + '%' }"
@@ -68,11 +68,29 @@
     </div>
     <div id="time">
       <p id="current_time">{{ formatTime(playerState?.progress_ms || 0) }}</p>
-      <div id="timebar">
+      <div
+        id="timebar"
+        ref="timeBarRef"
+        @mousemove="onMouseMove"
+        @mouseenter="onMouseEnter"
+        @mouseleave="onMouseLeave"
+        @click="onTimeBarClick">
         <div
           id="progress"
           :style="{ width: getProgressPercentage + '%' }"
         ></div>
+        <div
+          v-if="circleVisible"
+          class="hover-circle"
+          :style="{ left: hoverPosition + 'px' }"
+        ></div>
+        <div
+          v-if="circleVisible"
+          class="hover-tooltip"
+          :style="{ left: hoverPosition + 'px' }"
+        >
+          {{ hoverValue }}
+        </div>
       </div>
       <p id="time_length">{{ formatTime(playerState?.item.duration_ms || 0) }}</p>
     </div>
@@ -84,15 +102,19 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, onBeforeUnmount, computed } from 'vue'
-import { fetchPlayerState, pausePlayback, playPlayback, skipNext, skipPrevious, isLiked, saveTracks, unsaveTracks, toggleShuffleState, setRepeatState } from '@/services/musicPlayerService'
+import { fetchPlayerState, pausePlayback, playPlayback, skipNext, skipPrevious, isLiked, saveTracks, unsaveTracks, toggleShuffleState, setRepeatState, seekToPosition, setPlaybackVolume } from '@/services/musicPlayerService'
 import type { PlayerState } from '@/types/PlayerState'
 
 export default defineComponent({
   name: 'PlayerComponent',
   setup() {
-    const playerState = ref<PlayerState | null>(null)
-    const isCurrentTrackLiked = ref<Array<boolean> | null>(null)
-    const playerInterval = ref<number | null>(null)
+    const playerState = ref<PlayerState | null>(null);
+    const isCurrentTrackLiked = ref<Array<boolean> | null>(null);
+    const playerInterval = ref<number | null>(null);
+    const timeBarRef = ref<HTMLDivElement | null>(null);
+    const volumeBarRef = ref<HTMLDivElement | null>(null);
+    const hoverPosition = ref(0);
+    const circleVisible = ref(false);
 
     const repeatModes = ["off", "track", "context"];
 
@@ -172,6 +194,47 @@ export default defineComponent({
       }
     }
 
+    const onTimeBarClick = (event: MouseEvent) => {
+      if (!timeBarRef.value || !playerState.value) return;
+
+      const rect = timeBarRef.value.getBoundingClientRect();
+      const clickX = event.clientX - rect.left;
+      const percentage = (clickX / rect.width) * 100;
+
+      const newTime = Math.floor((percentage / 100) * playerState.value.item.duration_ms);
+
+      seekToPosition(newTime);
+    };
+
+    const onVolumeBarClick = (event: MouseEvent) => {
+      if (!volumeBarRef.value || !playerState.value) return;
+
+      const rect = volumeBarRef.value.getBoundingClientRect();
+      const clickX = event.clientX - rect.left;
+      const percentage = (clickX / rect.width) * 100;
+
+      const newTime = Math.floor(percentage);
+
+      setPlaybackVolume(newTime);
+    }
+
+    const onMouseEnter = () => {
+      circleVisible.value = true;
+    };
+
+    const onMouseLeave = () => {
+      circleVisible.value = false;
+    };
+
+    const onMouseMove = (event: MouseEvent) => {
+      if (!timeBarRef.value) return;
+
+      const rect = timeBarRef.value.getBoundingClientRect();
+      const hoverX = event.clientX - rect.left;
+
+      hoverPosition.value = hoverX;
+    };
+
     onMounted(() => {
       startPolling()
     })
@@ -190,10 +253,31 @@ export default defineComponent({
       unsaveTrack,
       toggleShuffle,
       setRepeatMode,
+      timeBarRef,
+      onTimeBarClick,
+      volumeBarRef,
+      onVolumeBarClick,
+      hoverPosition,
+      circleVisible,
+      onMouseEnter,
+      onMouseLeave,
+      onMouseMove,
       getProgressPercentage: computed(() => {
         const progress = playerState.value?.progress_ms || 0
         const duration = playerState.value?.item.duration_ms || 1
         return (progress / duration) * 100
+      }),
+      hoverValue: computed(() => {
+        if (!timeBarRef.value || !playerState.value) return '0:00';
+
+        const rect = timeBarRef.value.getBoundingClientRect();
+        const percentage = (hoverPosition.value / rect.width) * 100;
+
+        const time = (percentage / 100) * playerState.value.item.duration_ms;
+        const minutes = Math.floor(time / 60000);
+        const seconds = Math.floor((time % 60000) / 1000);
+
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
       }),
       formatTime(ms: number) {
         let seconds = Math.floor(ms / 1000)
