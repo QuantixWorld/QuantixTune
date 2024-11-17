@@ -27,9 +27,9 @@ export const pausePlayback = async () => {
 export const playPlayback = async () => {
   try {
     await axios.put('http://localhost:3000/play', {},
-    {
-      withCredentials: true,
-    });
+      {
+        withCredentials: true,
+      });
   } catch (error) {
     console.error('Failed to play the player: ', error)
     throw error
@@ -39,9 +39,9 @@ export const playPlayback = async () => {
 export const skipNext = async () => {
   try {
     await axios.post('http://localhost:3000/next', {},
-    {
-      withCredentials: true,
-    });
+      {
+        withCredentials: true,
+      });
   } catch (error) {
     console.error('Failed to skip to next: ', error)
     throw error
@@ -51,9 +51,9 @@ export const skipNext = async () => {
 export const skipPrevious = async () => {
   try {
     await axios.post('http://localhost:3000/previous', {},
-    {
-      withCredentials: true,
-    });
+      {
+        withCredentials: true,
+      });
   } catch (error) {
     console.error('Failed to skip to previous: ', error)
     throw error
@@ -70,10 +70,10 @@ export async function isLiked(trackIds: Array<string>): Promise<Array<boolean>> 
 
   try {
     const isLiked = await axios.get('http://localhost:3000/is-liked',
-    {
-      params: { ids },
-      withCredentials: true,
-    });
+      {
+        params: { ids },
+        withCredentials: true,
+      });
 
     return isLiked.data
   } catch (error) {

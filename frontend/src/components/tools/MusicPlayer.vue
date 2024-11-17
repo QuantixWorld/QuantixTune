@@ -2,10 +2,17 @@
   <div v-if="playerState" id="player">
     <div id="player_content">
       <div id="track">
-        <img :src="playerState.item.is_local ? 'src/assets/images/local_file_icon.svg' : playerState.item.album.images[2].url" alt="album image" />
+        <img
+          :src="
+            playerState.item.is_local
+              ? 'src/assets/images/local_file_icon.svg'
+              : playerState.item.album.images[2].url
+          "
+          alt="album image"
+        />
         <div id="track-info">
           <p>{{ playerState.item.name }}</p>
-          <p>{{ playerState.item.artists.map(artist => artist.name).join(', ') }}</p>
+          <p>{{ playerState.item.artists.map((artist) => artist.name).join(', ') }}</p>
         </div>
         <div id="track-icons">
           <i v-if="playerState.item.is_local" class="fa-solid fa-triangle-exclamation"></i>
@@ -19,10 +26,10 @@
           :class="{
             'fa-solid fa-shuffle': true,
             'fa-xl': true,
-            'animated-glow': playerState.smart_shuffle
+            'animated-glow': playerState.smart_shuffle,
           }"
           :style="{
-            color: playerState.shuffle_state ? '#1db9d2' : ''
+            color: playerState.shuffle_state ? '#1db9d2' : '',
           }"
           @click="toggleShuffle"
         ></i>
@@ -37,7 +44,7 @@
         <i
           :class="{
             'fa-solid fa-repeat fa-xl': true,
-            'animated-glow': playerState.repeat_state === 'context'
+            'animated-glow': playerState.repeat_state === 'context',
           }"
           :style="{ color: playerState.repeat_state != 'off' ? '#1db9d2' : 'white' }"
           @click="setRepeatMode"
@@ -47,21 +54,31 @@
         <i class="fa-solid fa-microphone-lines fa-1x coming_soon"></i>
         <i class="fa-solid fa-satellite-dish fa-1x coming_soon"></i>
         <i class="fa-solid fa-bars-staggered fa-1x coming_soon"></i>
-        <i :class="{
+        <i
+          :class="{
             'fa-solid fa-volume-off fa-1x': !playerState.device.supports_volume,
-            'fa-solid fa-volume-xmark fa-1x': playerState.device.supports_volume && playerState.device.volume_percent == 0,
-            'fa-solid fa-volume-low fa-1x': playerState.device.supports_volume && playerState.device.volume_percent > 0 && playerState.device.volume_percent < 75,
-            'fa-solid fa-volume-high fa-1x': playerState.device.supports_volume && playerState.device.volume_percent >= 75
+            'fa-solid fa-volume-xmark fa-1x':
+              playerState.device.supports_volume && playerState.device.volume_percent == 0,
+            'fa-solid fa-volume-low fa-1x':
+              playerState.device.supports_volume &&
+              playerState.device.volume_percent > 0 &&
+              playerState.device.volume_percent < 75,
+            'fa-solid fa-volume-high fa-1x':
+              playerState.device.supports_volume && playerState.device.volume_percent >= 75,
           }"
           :style="{
             color: !playerState.device.supports_volume ? 'grey' : '',
-            cursor: !playerState.device.supports_volume ? 'default' : 'pointer'
+            cursor: !playerState.device.supports_volume ? 'default' : 'pointer',
           }"
         ></i>
         <div id="volume" ref="volumeBarRef" @click="onVolumeBarClick">
           <div
             id="volume_percentage"
-            :style="{ width: (playerState.device.supports_volume ? playerState.device.volume_percent : '0') + '%' }"
+            :style="{
+              width:
+                (playerState.device.supports_volume ? playerState.device.volume_percent : '0') +
+                '%',
+            }"
           ></div>
         </div>
       </div>
@@ -74,23 +91,21 @@
         @mousemove="onMouseMove"
         @mouseenter="onMouseEnter"
         @mouseleave="onMouseLeave"
-        @click="onTimeBarClick">
-        <div
-          id="progress"
-          :style="{ width: getProgressPercentage + '%' }"
-        ></div>
-        <div
-          v-if="circleVisible"
-          class="hover-circle"
-          :style="{ left: hoverPosition + 'px' }"
-        ></div>
-        <div
-          v-if="circleVisible"
-          class="hover-tooltip"
-          :style="{ left: hoverPosition + 'px' }"
-        >
-          {{ hoverValue }}
-        </div>
+        @click="onTimeBarClick"
+      >
+        <div id="progress" :style="{ width: getProgressPercentage + '%' }"></div>
+        <transition name="fade">
+          <div
+            v-if="circleVisible"
+            class="hover-circle"
+            :style="{ left: hoverPosition + 'px' }"
+          ></div>
+        </transition>
+        <transition name="fade">
+          <div v-if="circleVisible" class="hover-tooltip" :style="{ left: hoverPosition + 'px' }">
+            {{ hoverValue }}
+          </div>
+        </transition>
       </div>
       <p id="time_length">{{ formatTime(playerState?.item.duration_ms || 0) }}</p>
     </div>
@@ -102,21 +117,34 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, onBeforeUnmount, computed } from 'vue'
-import { fetchPlayerState, pausePlayback, playPlayback, skipNext, skipPrevious, isLiked, saveTracks, unsaveTracks, toggleShuffleState, setRepeatState, seekToPosition, setPlaybackVolume } from '@/services/musicPlayerService'
+import {
+  fetchPlayerState,
+  pausePlayback,
+  playPlayback,
+  skipNext,
+  skipPrevious,
+  isLiked,
+  saveTracks,
+  unsaveTracks,
+  toggleShuffleState,
+  setRepeatState,
+  seekToPosition,
+  setPlaybackVolume,
+} from '@/services/musicPlayerService'
 import type { PlayerState } from '@/types/PlayerState'
 
 export default defineComponent({
   name: 'PlayerComponent',
   setup() {
-    const playerState = ref<PlayerState | null>(null);
-    const isCurrentTrackLiked = ref<Array<boolean> | null>(null);
-    const playerInterval = ref<number | null>(null);
-    const timeBarRef = ref<HTMLDivElement | null>(null);
-    const volumeBarRef = ref<HTMLDivElement | null>(null);
-    const hoverPosition = ref(0);
-    const circleVisible = ref(false);
+    const playerState = ref<PlayerState | null>(null)
+    const isCurrentTrackLiked = ref<Array<boolean> | null>(null)
+    const playerInterval = ref<number | null>(null)
+    const timeBarRef = ref<HTMLDivElement | null>(null)
+    const volumeBarRef = ref<HTMLDivElement | null>(null)
+    const hoverPosition = ref(0)
+    const circleVisible = ref(false)
 
-    const repeatModes = ["off", "track", "context"];
+    const repeatModes = ['off', 'track', 'context']
 
     const getPlayerState = async () => {
       try {
@@ -188,52 +216,59 @@ export default defineComponent({
 
     const setRepeatMode = async () => {
       if (!playerState.value?.device.is_restricted) {
-        const nextState = repeatModes[(repeatModes.indexOf(playerState.value != null ? playerState.value?.repeat_state : 'off') + 1 ) % repeatModes.length]
+        const nextState =
+          repeatModes[
+            (repeatModes.indexOf(
+              playerState.value != null ? playerState.value?.repeat_state : 'off',
+            ) +
+              1) %
+              repeatModes.length
+          ]
 
         await setRepeatState(nextState)
       }
     }
 
     const onTimeBarClick = (event: MouseEvent) => {
-      if (!timeBarRef.value || !playerState.value) return;
+      if (!timeBarRef.value || !playerState.value) return
 
-      const rect = timeBarRef.value.getBoundingClientRect();
-      const clickX = event.clientX - rect.left;
-      const percentage = (clickX / rect.width) * 100;
+      const rect = timeBarRef.value.getBoundingClientRect()
+      const clickX = event.clientX - rect.left
+      const percentage = (clickX / rect.width) * 100
 
-      const newTime = Math.floor((percentage / 100) * playerState.value.item.duration_ms);
+      const newTime = Math.floor((percentage / 100) * playerState.value.item.duration_ms)
 
-      seekToPosition(newTime);
-    };
+      seekToPosition(newTime)
+    }
 
     const onVolumeBarClick = (event: MouseEvent) => {
-      if (!volumeBarRef.value || !playerState.value) return;
+      if (!volumeBarRef.value || !playerState.value) return
 
-      const rect = volumeBarRef.value.getBoundingClientRect();
-      const clickX = event.clientX - rect.left;
-      const percentage = (clickX / rect.width) * 100;
+      const rect = volumeBarRef.value.getBoundingClientRect()
+      const clickX = event.clientX - rect.left
+      const percentage = (clickX / rect.width) * 100
 
-      const newTime = Math.floor(percentage);
+      const newTime = Math.floor(percentage)
 
-      setPlaybackVolume(newTime);
+      setPlaybackVolume(newTime)
     }
 
     const onMouseEnter = () => {
-      circleVisible.value = true;
-    };
+      circleVisible.value = true
+    }
 
     const onMouseLeave = () => {
-      circleVisible.value = false;
-    };
+      circleVisible.value = false
+    }
 
     const onMouseMove = (event: MouseEvent) => {
-      if (!timeBarRef.value) return;
+      if (!timeBarRef.value) return
 
-      const rect = timeBarRef.value.getBoundingClientRect();
-      const hoverX = event.clientX - rect.left;
+      const rect = timeBarRef.value.getBoundingClientRect()
+      const hoverX = event.clientX - rect.left
 
-      hoverPosition.value = hoverX;
-    };
+      hoverPosition.value = hoverX
+    }
 
     onMounted(() => {
       startPolling()
@@ -268,28 +303,27 @@ export default defineComponent({
         return (progress / duration) * 100
       }),
       hoverValue: computed(() => {
-        if (!timeBarRef.value || !playerState.value) return '0:00';
+        if (!timeBarRef.value || !playerState.value) return '0:00'
 
-        const rect = timeBarRef.value.getBoundingClientRect();
-        const percentage = (hoverPosition.value / rect.width) * 100;
+        const rect = timeBarRef.value.getBoundingClientRect()
+        const percentage = (hoverPosition.value / rect.width) * 100
 
-        const time = (percentage / 100) * playerState.value.item.duration_ms;
-        const minutes = Math.floor(time / 60000);
-        const seconds = Math.floor((time % 60000) / 1000);
+        const time = (percentage / 100) * playerState.value.item.duration_ms
+        const minutes = Math.floor(time / 60000)
+        const seconds = Math.floor((time % 60000) / 1000)
 
-        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`
       }),
       formatTime(ms: number) {
         let seconds = Math.floor(ms / 1000)
         const minutes = Math.floor(seconds / 60)
         seconds -= minutes * 60
-        return minutes + ":" + ("0" + seconds).slice(-2)
+        return minutes + ':' + ('0' + seconds).slice(-2)
       },
     }
-  }
+  },
 })
 </script>
-
 
 <style scoped>
 @import url('@/assets/style/components/Player');

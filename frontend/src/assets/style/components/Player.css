@@ -142,11 +142,39 @@
   cursor: pointer;
 }
 
+#timebar::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  left: 0;
+  right: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
 #progress {
   height: 100%;
   background-color: #1db9d2;
   border-radius: 2px;
   transition: width 0.2s ease;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.fade-leave-from,
+.fade-enter-to {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .hover-circle {
@@ -158,7 +186,6 @@
   border-radius: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;
-  transition: transform 0.1s ease, opacity 0.1s ease;
 }
 
 .hover-tooltip {
@@ -170,7 +197,6 @@
   padding: 2px 5px;
   border-radius: 4px;
   transform: translateX(-50%);
-  white-space: nowrap;
   pointer-events: none;
 }
 

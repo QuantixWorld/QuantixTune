@@ -66,28 +66,28 @@ router.get("/callback", async function (req, res) {
     const expiresIn = Date.now() + tokenResponse.data.expires_in * 1000;
 
     try {
-        const userProfileResponse = await axios.get(
-            "https://api.spotify.com/v1/me",
-            {
-              headers: {
-                Authorization: "Bearer " + accessToken,
-              },
-            }
-          );
-      
-          const userId = userProfileResponse.data.id;
+      const userProfileResponse = await axios.get(
+        "https://api.spotify.com/v1/me",
+        {
+          headers: {
+            Authorization: "Bearer " + accessToken,
+          },
+        }
+      );
 
-          await redis.saveTokens(userId, accessToken, refreshToken, expiresIn);
-      
-          res.cookie("userId", userId, {
-            httpOnly: true,
-            sameSite: "strict",
-            secure: true,
-          });
+      const userId = userProfileResponse.data.id;
 
-          res.redirect("http://localhost:5173/");
+      await redis.saveTokens(userId, accessToken, refreshToken, expiresIn);
+
+      res.cookie("userId", userId, {
+        httpOnly: true,
+        sameSite: "strict",
+        secure: true,
+      });
+
+      res.redirect("http://localhost:5173/");
     } catch (error) {
-        console.error("Failed", error);
+      console.error("Failed", error);
     }
   }
 });
