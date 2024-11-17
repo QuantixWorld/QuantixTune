@@ -77,7 +77,7 @@ export async function isLiked(trackIds: Array<string>): Promise<Array<boolean>> 
 
     return isLiked.data
   } catch (error) {
-    console.error('Failed to skip to previous: ', error)
+    console.error('Failed to check if saved: ', error)
     throw error
   }
 }
@@ -122,7 +122,7 @@ export async function toggleShuffleState(state: boolean) {
       withCredentials: true
     })
   } catch (error) {
-    console.error('Failed to unsave the tracks: ', error)
+    console.error('Failed to toggle shuffle: ', error)
     throw error
   }
 }
@@ -134,7 +134,7 @@ export async function setRepeatState(state: string) {
       withCredentials: true
     })
   } catch (error) {
-    console.error('Failed to unsave the tracks: ', error)
+    console.error('Failed to set repeat mode: ', error)
     throw error
   }
 }

@@ -2,13 +2,14 @@
   <div v-if="playerState" id="player">
     <div id="player_content">
       <div id="track">
-        <img :src="playerState.item.album.images[2].url" alt="album image" />
+        <img :src="playerState.item.is_local ? 'src/assets/images/local_file_icon.svg' : playerState.item.album.images[2].url" alt="album image" />
         <div id="track-info">
           <p>{{ playerState.item.name }}</p>
           <p>{{ playerState.item.artists.map(artist => artist.name).join(', ') }}</p>
         </div>
         <div id="track-icons">
-          <i v-if="isCurrentTrackLiked" class="fa-solid fa-heart" @click="unsaveTrack"></i>
+          <i v-if="playerState.item.is_local" class="fa-solid fa-triangle-exclamation"></i>
+          <i v-else-if="isCurrentTrackLiked" class="fa-solid fa-heart" @click="unsaveTrack"></i>
           <i v-else class="fa-regular fa-heart" @click="saveTrack"></i>
           <i class="fa-regular fa-square-plus coming_soon"></i>
         </div>
@@ -98,7 +99,7 @@ export default defineComponent({
     const getPlayerState = async () => {
       try {
         playerState.value = await fetchPlayerState()
-        if (playerState.value.item != null) {
+        if (playerState.value.item != null && !playerState.value.item.is_local) {
           isCurrentTrackLiked.value = await isLiked([playerState.value.item.id])
         }
       } catch (error) {
