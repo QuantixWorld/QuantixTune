@@ -47,8 +47,7 @@ async function refreshTokenIfNeeded(userId) {
       tokens.refreshToken,
       newExpiresIn
     );
-    /**/
-  }
+  }/**/
 }
 
 module.exports = { refreshTokenIfNeeded };

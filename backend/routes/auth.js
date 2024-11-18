@@ -5,6 +5,15 @@ const redis = require("../utils/redisUtils");
 const express = require("express");
 const router = express.Router();
 
+router.get("/auth-status", (req, res) => {
+  const userId = req.cookies.userId;
+  if (!userId) {
+    return res.status(401).json({ loggedIn: false });
+  }
+
+  res.status(200).json({ loggedIn: true });
+})
+
 router.get("/login", function (req, res) {
   var state = generateRandomString(16);
   var scope =
