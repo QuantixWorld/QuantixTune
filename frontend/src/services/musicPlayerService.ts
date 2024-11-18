@@ -1,9 +1,9 @@
-import axios from 'axios'
 import type { PlayerState } from '@/types/PlayerState'
+import axiosInstance from './axiosInstance'
 
 export const fetchPlayerState = async (): Promise<PlayerState> => {
   try {
-    const response = await axios.get<PlayerState>('http://localhost:3000/player', {
+    const response = await axiosInstance.get<PlayerState>('http://localhost:3000/player', {
       withCredentials: true,
     })
     return response.data
@@ -15,7 +15,7 @@ export const fetchPlayerState = async (): Promise<PlayerState> => {
 
 export const pausePlayback = async () => {
   try {
-    await axios.put('http://localhost:3000/pause', {}, {
+    await axiosInstance.put('http://localhost:3000/pause', {}, {
       withCredentials: true,
     });
   } catch (error) {
@@ -26,7 +26,7 @@ export const pausePlayback = async () => {
 
 export const playPlayback = async () => {
   try {
-    await axios.put('http://localhost:3000/play', {},
+    await axiosInstance.put('http://localhost:3000/play', {},
       {
         withCredentials: true,
       });
@@ -38,7 +38,7 @@ export const playPlayback = async () => {
 
 export const skipNext = async () => {
   try {
-    await axios.post('http://localhost:3000/next', {},
+    await axiosInstance.post('http://localhost:3000/next', {},
       {
         withCredentials: true,
       });
@@ -50,7 +50,7 @@ export const skipNext = async () => {
 
 export const skipPrevious = async () => {
   try {
-    await axios.post('http://localhost:3000/previous', {},
+    await axiosInstance.post('http://localhost:3000/previous', {},
       {
         withCredentials: true,
       });
@@ -69,7 +69,7 @@ export async function isLiked(trackIds: Array<string>): Promise<Array<boolean>> 
   const ids = trackIds.join(',')
 
   try {
-    const isLiked = await axios.get('http://localhost:3000/is-liked',
+    const isLiked = await axiosInstance.get('http://localhost:3000/is-liked',
       {
         params: { ids },
         withCredentials: true,
@@ -89,7 +89,7 @@ export async function saveTracks(trackIds: Array<string>) {
   }
 
   try {
-    await axios.put('http://localhost:3000/tracks', { ids: trackIds }, {
+    await axiosInstance.put('http://localhost:3000/tracks', { ids: trackIds }, {
       withCredentials: true
     })
   } catch (error) {
@@ -105,7 +105,7 @@ export async function unsaveTracks(trackIds: Array<string>) {
   }
 
   try {
-    await axios.delete('http://localhost:3000/tracks', {
+    await axiosInstance.delete('http://localhost:3000/tracks', {
       data: { ids: trackIds },
       withCredentials: true
     })
@@ -117,7 +117,7 @@ export async function unsaveTracks(trackIds: Array<string>) {
 
 export async function toggleShuffleState(state: boolean) {
   try {
-    await axios.put('http://localhost:3000/shuffle', {}, {
+    await axiosInstance.put('http://localhost:3000/shuffle', {}, {
       params: { state },
       withCredentials: true
     })
@@ -129,7 +129,7 @@ export async function toggleShuffleState(state: boolean) {
 
 export async function setRepeatState(state: string) {
   try {
-    await axios.put('http://localhost:3000/repeat', {}, {
+    await axiosInstance.put('http://localhost:3000/repeat', {}, {
       params: { state },
       withCredentials: true
     })
@@ -141,7 +141,7 @@ export async function setRepeatState(state: string) {
 
 export async function seekToPosition(position_ms: number) {
   try {
-    await axios.put('http://localhost:3000/seek', {}, {
+    await axiosInstance.put('http://localhost:3000/seek', {}, {
       params: { position_ms },
       withCredentials: true
     })
@@ -153,7 +153,7 @@ export async function seekToPosition(position_ms: number) {
 
 export async function setPlaybackVolume(volume_percent: number) {
   try {
-    await axios.put('http://localhost:3000/volume', {}, {
+    await axiosInstance.put('http://localhost:3000/volume', {}, {
       params: { volume_percent },
       withCredentials: true
     })

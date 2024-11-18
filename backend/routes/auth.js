@@ -7,11 +7,18 @@ const router = express.Router();
 
 router.get("/auth-status", (req, res) => {
   const userId = req.cookies.userId;
-  if (!userId) {
-    return res.status(401).json({ loggedIn: false });
-  }
 
-  res.status(200).json({ loggedIn: true });
+  res.status(200).json({ loggedIn: userId != undefined });
+})
+
+router.delete("/logout", function (req, res) {
+  res.clearCookie("userId", {
+    httpOnly: true,
+    sameSite: "strict",
+    secure: true,
+  });
+
+  res.status(200).json()
 })
 
 router.get("/login", function (req, res) {

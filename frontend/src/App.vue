@@ -1,14 +1,19 @@
 <template>
   <div id="app">
     <MainNavbar />
-    <MusicPlayer v-if="isLoggedIn" />
+    <MusicPlayer v-if="authStore.isLoggedIn" />
+    <LogoutButton v-if="authStore.isLoggedIn" />
+    <LoginButton v-if="!authStore.isLoggedIn" />
     <router-view />
   </div>
 </template>
 
 <script lang="ts">
+import LogoutButton from './components/tools/LogoutButton.vue';
+import LoginButton from './components/tools/LoginButton.vue';
 import MainNavbar from './components/tools/MainNavbar.vue'
 import MusicPlayer from './components/tools/MusicPlayer.vue'
+import { useAuthStore } from './stores/authStore';
 
 import axios from 'axios'
 import { ref, onMounted } from 'vue'
@@ -18,26 +23,18 @@ export default {
   components: {
     MainNavbar,
     MusicPlayer,
+    LoginButton,
+    LogoutButton,
   },
   setup() {
-    const isLoggedIn = ref(false);
-
-    const checkAuthStatus = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/auth-status', { withCredentials: true });
-        isLoggedIn.value = response.data.loggedIn;
-      } catch (error) {
-        isLoggedIn.value = false;
-        console.error('Auth check failed:', error);
-      }
-    };
+    const authStore = useAuthStore();
 
     onMounted(() => {
-      checkAuthStatus();
+      authStore.checkAuthStatus();
     });
 
     return {
-      isLoggedIn,
+      authStore,
     };
   },
 };

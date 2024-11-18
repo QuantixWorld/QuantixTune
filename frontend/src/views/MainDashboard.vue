@@ -11,14 +11,12 @@
         :description="tool.description"
         :route="tool.route"
       />
-      <LoginButton></LoginButton>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import ToolCard from '../components/tools/ToolCard.vue'
-import LoginButton from '@/components/tools/LoginButton.vue'
 import { tools } from '../composables/views/MainDashboardData'
 
 console.log(tools) // Log tools to check values
