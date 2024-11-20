@@ -53,7 +53,7 @@
       <div id="tools">
         <i class="fa-solid fa-microphone-lines fa-1x coming_soon"></i>
         <i class="fa-solid fa-satellite-dish fa-1x coming_soon"></i>
-        <i class="fa-solid fa-bars-staggered fa-1x coming_soon"></i>
+        <i class="fa-solid fa-bars-staggered fa-1x"></i>
         <i
           :class="{
             'fa-solid fa-volume-off fa-1x': !playerState.device.supports_volume,
@@ -109,6 +109,7 @@
       </div>
       <p id="time_length">{{ formatTime(playerState?.item.duration_ms || 0) }}</p>
     </div>
+    <MusicList />
   </div>
   <div v-else id="no_playerState">
     <p>Unable to display the player at the moment</p>
@@ -132,9 +133,13 @@ import {
   setPlaybackVolume,
 } from '@/services/musicPlayerService'
 import type { PlayerState } from '@/types/PlayerState'
+import MusicList from './MusicList.vue';
 
 export default defineComponent({
   name: 'PlayerComponent',
+  components: {
+    MusicList
+  },
   setup() {
     const playerState = ref<PlayerState | null>(null)
     const isCurrentTrackLiked = ref<Array<boolean> | null>(null)
