@@ -24,20 +24,20 @@ router.delete("/logout", function (req, res) {
 router.get("/login", function (req, res) {
   var state = generateRandomString(16);
   var scope =
-    "user-read-private user-read-email user-read-playback-state user-modify-playback-state user-library-read user-library-modify";
+    "user-read-private user-read-email user-read-playback-state user-modify-playback-state user-library-read user-library-modify user-read-recently-played";
 
   const client_id = process.env.SPOTIFY_CLIENT_ID;
   const redirect_uri = "http://localhost:3000/callback";
 
   res.redirect(
     "https://accounts.spotify.com/authorize?" +
-      queryString.stringify({
-        response_type: "code",
-        client_id: client_id,
-        scope: scope,
-        redirect_uri: redirect_uri,
-        state: state,
-      })
+    queryString.stringify({
+      response_type: "code",
+      client_id: client_id,
+      scope: scope,
+      redirect_uri: redirect_uri,
+      state: state,
+    })
   );
 });
 
@@ -52,9 +52,9 @@ router.get("/callback", async function (req, res) {
   if (state === null) {
     res.redirect(
       "/#" +
-        querystring.stringify({
-          error: "state_mismatch",
-        })
+      querystring.stringify({
+        error: "state_mismatch",
+      })
     );
   } else {
     var authOptions = {

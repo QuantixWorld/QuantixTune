@@ -8,7 +8,7 @@
     right: 0px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-    padding: 15px;
+    padding: 5px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -16,7 +16,7 @@
 }
 
 .section {
-    height: 100%;
+    height: 5000px;  /* TODO: Change this to something dynamic */
     padding: 0px 5px;
     border-radius: 8px;
     display: flex;

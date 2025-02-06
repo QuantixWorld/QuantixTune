@@ -132,7 +132,7 @@ import {
   seekToPosition,
   setPlaybackVolume,
 } from '@/services/musicPlayerService'
-import type { PlayerState } from '@/types/PlayerState'
+import type { PlayerState } from '@/types/request'
 import MusicList from './MusicList.vue';
 
 export default defineComponent({
