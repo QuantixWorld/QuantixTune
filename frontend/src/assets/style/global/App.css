@@ -12,6 +12,7 @@ body {
   color: white;
   border-radius: 4px;
   text-decoration: none;
+  cursor: pointer;
 }
 .button:hover {
   background-color: #33c7dd;

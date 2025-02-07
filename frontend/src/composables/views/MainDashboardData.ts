@@ -1,20 +1,49 @@
-export const tools = [
+import { ref } from "vue";
+
+export const playlists = ref([
   {
     id: 1,
-    title: 'Duplicate Detector',
-    description: 'Find duplicates in playlist',
-    route: '/duplicate-detector',
+    img: "@/assets/images/local_file_icon.svg",
+    title: 'Title of the playlist',
   },
   {
     id: 2,
-    title: 'Playlist Comparison',
-    description: 'Compare playlists side by side',
-    route: '/playlist-comparison',
+    img: "@/assets/images/local_file_icon.svg",
+    title: 'Title of the playlist',
   },
   {
     id: 3,
-    title: 'Playlist Analyzer',
-    description: 'Analyze playlist characteristics',
-    route: '/playlist-analyzer',
+    img: "@/assets/images/local_file_icon.svg",
+    title: 'Title of the playlist',
   },
-]
+  {
+    id: 4,
+    img: "@/assets/images/local_file_icon.svg",
+    title: 'Title of the playlist',
+  },
+  {
+    id: 5,
+    img: "@/assets/images/local_file_icon.svg",
+    title: 'Title of the playlist',
+  },
+  {
+    id: 6,
+    img: "@/assets/images/local_file_icon.svg",
+    title: 'Title of the playlist',
+  },
+  {
+    id: 7,
+    img: "@/assets/images/local_file_icon.svg",
+    title: 'Title of the playlist',
+  },
+  {
+    id: 8,
+    img: "@/assets/images/local_file_icon.svg",
+    title: 'Title of the playlist',
+  },
+  {
+    id: 9,
+    img: "@/assets/images/local_file_icon.svg",
+    title: 'Title of the playlist',
+  },
+])
