@@ -4,6 +4,7 @@ const cors = require("cors");
 const authRoutes = require("./routes/auth");
 const playerRoutes = require("./routes/player");
 const tracksRoutes = require("./routes/tracks");
+const playlistRoutes = require("./routes/playlist");
 const errorHandler = require("./utils/errorHandler");
 
 require("dotenv").config();
@@ -17,6 +18,7 @@ app.use(cookieParser());
 app.use(authRoutes);
 app.use(playerRoutes);
 app.use(tracksRoutes);
+app.use(playlistRoutes);
 
 app.use(errorHandler);
 

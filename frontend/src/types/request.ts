@@ -1,32 +1,32 @@
 import type {
-  SpotifyDevice,
-  SpotifyContext,
-  SpotifyTrack
-} from './Spotify'
+  Device,
+  Context,
+  Track,
+  SimplifiedPlaylist,
+  ExternalUrl
+} from './spotify'
 
 export interface PlayerState {
-  device: SpotifyDevice
+  device: Device
   shuffle_state: boolean
   smart_shuffle: boolean
   repeat_state: string
   timestamp: number
-  context: SpotifyContext
+  context: Context
   progress_ms: number
-  item: SpotifyTrack
+  item: Track
   currently_playing_type: string
   actions: { disallows: { resuming: boolean } }
   is_playing: boolean
 }
 
 export interface PlayHistoryObject {
-  track: SpotifyTrack
+  track: Track
   played_at: string
   context: {
     type: string
     href: string
-    external_urls: {
-      spotify: string
-    }
+    external_urls: ExternalUrl
     uri: string
   }
 }
@@ -44,6 +44,16 @@ export interface RecentlyPlayed {
 }
 
 export interface Queue {
-  currently_playing: SpotifyTrack
-  queue: Array<SpotifyTrack>
+  currently_playing: Track
+  queue: Array<Track>
+}
+
+export interface Playlists {
+  href: string
+  limit: number
+  next: string
+  offset: number
+  previous: string
+  total: number
+  items: Array<SimplifiedPlaylist>
 }

@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <MainNavbar />
-    <!--<MusicPlayer v-if="authStore.isLoggedIn" />-->
+    <MusicPlayer v-if="authStore.isLoggedIn" />
     <LogoutButton v-if="authStore.isLoggedIn" />
     <LoginButton v-if="!authStore.isLoggedIn" />
     <router-view />

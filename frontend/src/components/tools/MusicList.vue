@@ -1,38 +1,16 @@
 <template>
   <div ref="scrollContainerRef" id="music-list">
     <div id="recently-played" class="section" v-if="recentlyPlayed">
-      <div class="track" v-for="(item, index) in recentlyPlayed.items" :key="index">
-        <img :src="item.track.is_local
-          ? 'src/assets/images/local_file_icon.svg'
-          : item.track.album.images[2]?.url" alt="Track Image" class="track-image" />
-        <div class="track-details">
-          <p class="track-title">{{ item.track.name }}</p>
-          <p class="track-artists">{{ item.track.artists.map(artist => artist.name).join(', ') }}</p>
-        </div>
-      </div>
+      <TrackDisplay v-for="track in recentlyPlayed?.items" :key="track.track.id" :track="track.track" />
     </div>
     <h3>Recently Played</h3>
 
-    <div class="track current-track" v-if="queue && queue.currently_playing">
-      <img :src="queue.currently_playing.is_local
-        ? 'src/assets/images/local_file_icon.svg'
-        : queue.currently_playing.album.images[2]?.url" alt="Track Image" class="track-image" />
-      <div class="track-details">
-        <p class="track-title">{{ queue.currently_playing.name }}</p>
-        <p class="track-artists">{{ queue.currently_playing.artists.map(artist => artist.name).join(', ') }}</p>
-      </div>
-    </div>
+    <TrackDisplay class="current-track" v-if="queue && queue.currently_playing" :key="queue.currently_playing.id"
+      :track="queue.currently_playing" />
+
     <h3>Queue</h3>
     <div id="queue" class="section" v-if="queue && queue.queue.slice(0, 20)">
-      <div class="track" v-for="(item, index) in queue.queue" :key="index">
-        <img :src="item.is_local
-          ? 'src/assets/images/local_file_icon.svg'
-          : item.album.images[2]?.url" alt="Track Image" class="track-image" />
-        <div class="track-details">
-          <p class="track-title">{{ item.name }}</p>
-          <p class="track-artists">{{ item.artists.map(artist => artist.name).join(', ') }}</p>
-        </div>
-      </div>
+      <TrackDisplay v-for="track in queue?.queue" :key="track.id" :track="track" />
     </div>
   </div>
 </template>
@@ -44,9 +22,13 @@ import {
   fetchQueue
 } from '@/services/musicPlayerService'
 import type { RecentlyPlayed, Queue } from '@/types/request'
+import TrackDisplay from './TrackDisplay.vue';
 
 export default defineComponent({
   name: 'MusicList',
+  components: {
+    TrackDisplay
+  },
   setup() {
     const scrollContainerRef = ref<HTMLDivElement | null>(null)
     const recentlyPlayed = ref<RecentlyPlayed | null>(null)

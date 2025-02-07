@@ -148,7 +148,7 @@ export default defineComponent({
     const volumeBarRef = ref<HTMLDivElement | null>(null)
     const hoverPosition = ref(0)
     const circleVisible = ref(false)
-    let listVisible = ref(false)
+    const listVisible = ref(false)
 
     const repeatModes = ['off', 'track', 'context']
 

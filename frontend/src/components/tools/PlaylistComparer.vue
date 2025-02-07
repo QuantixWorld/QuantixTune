@@ -1,67 +1,55 @@
 <template>
-    <div id="playlist-comparer">
-        <h2>Playlist Comparer</h2>
-        <div id="pc_playlists">
-            <div id="pc_playlist1" class="pc_playlist-display">
-                <img src="@/assets/images/local_file_icon.svg" alt="Local file icon">
-                <div id="pc_playlist-info">
-                    <p>Title of the playlist</p>
-                </div>
-            </div>
-            <p class="button">Compare</p>
-            <div id="pc_playlist2" class="pc_playlist-display">
-                <img src="@/assets/images/local_file_icon.svg" alt="Local file icon">
-                <div id="pc_playlist-info">
-                    <p>Title of the playlist</p>
-                </div>
-            </div>
-        </div>
-        <h3>Results</h3>
-        <div id="pc_results">
-            <div id="only_in1" v-if="localPlaylists?.length">
-                <PlaylistDisplay id="pc_playlist1"
-                    v-for="playlist in localPlaylists"
-                    :key="playlist.id"
-                    :img="playlist.img"
-                    :title="playlist.title" />
-            </div>
-            <p v-else>Loading playlists...</p>
-            <div id="only_in2">
-                <img src="@/assets/images/local_file_icon.svg" alt="Local file icon">
-                <div id="pc_playlist-info">
-                    <p>Title of the playlist</p>
-                </div>
-                <img src="@/assets/images/local_file_icon.svg" alt="Local file icon">
-                <div id="pc_playlist-info">
-                    <p>Title of the playlist</p>
-                </div>
-                <img src="@/assets/images/local_file_icon.svg" alt="Local file icon">
-                <div id="pc_playlist-info">
-                    <p>Title of the playlist</p>
-                </div>
-                <img src="@/assets/images/local_file_icon.svg" alt="Local file icon">
-                <div id="pc_playlist-info">
-                    <p>Title of the playlist</p>
-                </div>
-                <img src="@/assets/images/local_file_icon.svg" alt="Local file icon">
-                <div id="pc_playlist-info">
-                    <p>Title of the playlist</p>
-                </div>
-            </div>
-        </div>
+  <div id="playlist-comparer">
+    <h2>Playlist Comparer</h2>
+    <div id="pc_playlists">
+      <div id="pc_playlist1" class="pc_playlist-display" @click="getPlaylists" >
+        <PlaylistDisplay img="@/assets/images/local_file_icon.svg" title="Title of the playlist" class="pc_playlist" />
+      </div>
+      <p class="button">Compare</p>
+      <div id="pc_playlist2" class="pc_playlist-display" @click="getPlaylists" >
+        <PlaylistDisplay img="@/assets/images/local_file_icon.svg" title="Title of the playlist" class="pc_playlist" />
+      </div>
     </div>
+    <div id="pc_results">
+      <h3>Results</h3>
+      <div id="pc_results_playlists">
+        <div id="only_in1" v-if="playlists?.items?.length">
+          <PlaylistDisplay v-for="playlist in playlists?.items" :key="playlist.id"
+          :img="playlist.images[2] ? playlist.images[2].url : playlist.images[0] ? playlist.images[0]?.url : '@/assets/images/default_icon.svg'" :title="playlist.name" class="pc_playlist-list" />
+        </div>
+        <div id="only_in2">
+          <PlaylistDisplay v-for="playlist in playlists?.items" :key="playlist.id"
+            :img="playlist.images[2] ? playlist.images[2].url : playlist.images[0] ? playlist.images[0]?.url : '@/assets/images/default_icon.svg'" :title="playlist.name" class="pc_playlist-list" />
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 import PlaylistDisplay from './PlaylistDisplay.vue';
-import { playlists } from '@/composables/views/MainDashboardData';
-
-const localPlaylists = ref(playlists)
-console.log(localPlaylists)
+import type { Playlists } from '@/types';
+import { fetchUserPlaylists } from '@/services/playlistService';
 
 export default defineComponent({
-    name: 'PlaylistComparer',
+  name: 'PlaylistComparer',
+  components: {
+    PlaylistDisplay
+  },
+  setup() {
+    const playlists = ref<Playlists | null>(null)
+
+    const getPlaylists = async () => {
+      playlists.value = await fetchUserPlaylists();
+      console.log(playlists.value);
+    }
+
+    return {
+      playlists,
+      getPlaylists
+    }
+  },
 })
 </script>
 

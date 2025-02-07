@@ -4,13 +4,6 @@
     <p>Explore tools linked to Spotify!</p>
 
     <div class="tool-list" v-if="authStore.isLoggedIn">
-      <!--<ToolCard
-        v-for="tool in tools"
-        :key="tool.id"
-        :title="tool.title"
-        :description="tool.description"
-        :route="tool.route"
-      />-->
       <PlaylistComparer />
     </div>
   </div>
