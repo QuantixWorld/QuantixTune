@@ -1,0 +1,90 @@
+#music-list {
+    background-color: #181818;
+    color: white;
+    width: 300px;
+    height: 350px;
+    position: fixed;
+    bottom: 120px;
+    right: 0px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+}
+
+.section {
+    height: 5000px;  /* TODO: Change this to something dynamic */
+    padding: 0px 5px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+#recently-played {
+    flex-direction: column-reverse;
+}
+
+h3 {
+    margin: 0px auto;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.track {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#recently-played .track:first-child {
+    margin-bottom: 0px;
+} 
+
+.current-track {
+    margin: 10px 0px;
+}
+
+.track-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.track-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.track-title {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.track-artists {
+    font-size: 12px;
+    color: #b3b3b3;
+    margin: 0;
+}
+
+.current-track {
+    padding: 8px;
+    background-color: #202020;
+    font-weight: bold;
+    border-radius: 8px;
+}
+
+#music-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+#music-list::-webkit-scrollbar-thumb {
+    background-color: #404040;
+    border-radius: 4px;
+}

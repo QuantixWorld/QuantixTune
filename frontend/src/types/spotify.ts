@@ -65,17 +65,3 @@ export interface SpotifyTrack {
   type: string
   uri: string
 }
-
-export interface PlayerState {
-  device: SpotifyDevice
-  shuffle_state: boolean
-  smart_shuffle: boolean
-  repeat_state: string
-  timestamp: number
-  context: SpotifyContext
-  progress_ms: number
-  item: SpotifyTrack
-  currently_playing_type: string
-  actions: { disallows: { resuming: boolean } }
-  is_playing: boolean
-}

@@ -1,4 +1,4 @@
-import type { PlayerState } from '@/types/PlayerState'
+import type { PlayerState, Queue, RecentlyPlayed } from '@/types/request'
 import axiosInstance from './axiosInstance'
 
 export const fetchPlayerState = async (): Promise<PlayerState> => {
@@ -159,6 +159,33 @@ export async function setPlaybackVolume(volume_percent: number) {
     })
   } catch (error) {
     console.error('Failed to seek to position: ', error)
+    throw error
+  }
+}
+
+export async function fetchRecentlyPlayed(limit: number) {
+  try {
+    const response = await axiosInstance.get<RecentlyPlayed>('http://localhost:3000/recently-played', {
+      params: { limit },
+      withCredentials: true
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch recently-played: ', error)
+    throw error
+  }
+}
+
+export async function fetchQueue() {
+  try {
+    const response = await axiosInstance.get<Queue>('http://localhost:3000/queue', {
+      withCredentials: true
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch queue: ', error)
     throw error
   }
 }

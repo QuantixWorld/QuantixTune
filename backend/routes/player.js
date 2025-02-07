@@ -70,4 +70,23 @@ router.put("/volume", async (req, res) => {
   await spotifyRequest(userId, "put", "me/player/volume", { volume_percent });
 });
 
+router.get("/recently-played", async (req, res) => {
+  const userId = req.cookies.userId;
+  
+  const limit = req.query.limit;
+
+  if (!userId) return res.status(401).send("Unauthrorized: Missing user ID");
+
+  const recentlyPlayed = await spotifyRequest(userId, "get", "me/player/recently-played", { limit });
+  res.json(recentlyPlayed);
+});
+
+router.get("/queue", async (req, res) => {
+  const userId = req.cookies.userId;
+  if (!userId) return res.status(401).send("Unauthorized: Missing user ID");
+
+  const queue = await spotifyRequest(userId, "get", "me/player/queue");
+  res.json(queue);
+})
+
 module.exports = router;

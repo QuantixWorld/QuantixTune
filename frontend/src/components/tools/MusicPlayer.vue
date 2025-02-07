@@ -45,15 +45,15 @@
           :class="{
             'fa-solid fa-repeat fa-xl': true,
             'animated-glow': playerState.repeat_state === 'context',
+            'toggled': playerState.repeat_state != 'off'
           }"
-          :style="{ color: playerState.repeat_state != 'off' ? '#1db9d2' : 'white' }"
           @click="setRepeatMode"
         ></i>
       </div>
       <div id="tools">
         <i class="fa-solid fa-microphone-lines fa-1x coming_soon"></i>
         <i class="fa-solid fa-satellite-dish fa-1x coming_soon"></i>
-        <i class="fa-solid fa-bars-staggered fa-1x coming_soon"></i>
+        <i class="fa-solid fa-bars-staggered fa-1x" :class="{ 'toggled': listVisible }" @click="toggleListDisplay"></i>
         <i
           :class="{
             'fa-solid fa-volume-off fa-1x': !playerState.device.supports_volume,
@@ -109,6 +109,7 @@
       </div>
       <p id="time_length">{{ formatTime(playerState?.item.duration_ms || 0) }}</p>
     </div>
+    <MusicList v-if="listVisible"/>
   </div>
   <div v-else id="no_playerState">
     <p>Unable to display the player at the moment</p>
@@ -131,10 +132,14 @@ import {
   seekToPosition,
   setPlaybackVolume,
 } from '@/services/musicPlayerService'
-import type { PlayerState } from '@/types/PlayerState'
+import type { PlayerState } from '@/types/request'
+import MusicList from './MusicList.vue';
 
 export default defineComponent({
   name: 'PlayerComponent',
+  components: {
+    MusicList
+  },
   setup() {
     const playerState = ref<PlayerState | null>(null)
     const isCurrentTrackLiked = ref<Array<boolean> | null>(null)
@@ -143,6 +148,7 @@ export default defineComponent({
     const volumeBarRef = ref<HTMLDivElement | null>(null)
     const hoverPosition = ref(0)
     const circleVisible = ref(false)
+    let listVisible = ref(false)
 
     const repeatModes = ['off', 'track', 'context']
 
@@ -229,6 +235,10 @@ export default defineComponent({
       }
     }
 
+    const toggleListDisplay = async () => {
+      listVisible.value = !listVisible.value
+    }
+
     const onTimeBarClick = (event: MouseEvent) => {
       if (!timeBarRef.value || !playerState.value) return
 
@@ -288,6 +298,8 @@ export default defineComponent({
       unsaveTrack,
       toggleShuffle,
       setRepeatMode,
+      toggleListDisplay,
+      listVisible,
       timeBarRef,
       onTimeBarClick,
       volumeBarRef,
