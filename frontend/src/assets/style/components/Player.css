@@ -93,7 +93,8 @@
 
 #player_buttons i:hover,
 #tools i:hover, 
-#track-icons i:hover {
+#track-icons i:hover,
+.toggled {
   color: #1db9d2;
 }
 

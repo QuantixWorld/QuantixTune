@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, onMounted, onBeforeUnmount } from 'vue'
+import { ref, defineComponent, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import {
   fetchRecentlyPlayed,
   fetchQueue
@@ -69,14 +69,19 @@ export default defineComponent({
       }
     }
 
-    const startPolling = () => {
-      getRecentlyPlayed()
-      getQueue()
-
+    const setScrollToCenter = () => {
       if (scrollContainerRef.value) {
         scrollContainerRef.value.scrollTop =
-          (scrollContainerRef.value.scrollHeight - scrollContainerRef.value.clientHeight) / 2
+          (scrollContainerRef.value.scrollHeight - scrollContainerRef.value.clientHeight) / 2 - 10
       }
+    }
+
+    const startPolling = async () => {
+      await Promise.all([getRecentlyPlayed(), getQueue()])
+
+      await nextTick()
+
+      setScrollToCenter()
 
       stopPolling()
 
