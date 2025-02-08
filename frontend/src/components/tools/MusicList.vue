@@ -9,8 +9,8 @@
       :track="queue.currently_playing" />
 
     <h3>Queue</h3>
-    <div id="queue" class="section" v-if="queue && queue.queue.slice(0, 20)">
-      <TrackDisplay v-for="track in queue?.queue" :key="track.id" :track="track" />
+    <div id="queue" class="section" v-if="queue && queue.queue">
+      <TrackDisplay v-for="track in queue.queue.slice(0, 20)" :key="track.id" :track="track" />
     </div>
   </div>
 </template>

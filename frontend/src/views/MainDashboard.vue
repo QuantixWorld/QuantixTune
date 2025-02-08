@@ -9,11 +9,24 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import PlaylistComparer from '@/components/tools/PlaylistComparer.vue';
 import { useAuthStore } from '@/stores/authStore';
+import { defineComponent } from 'vue';
 
-const authStore = useAuthStore();
+export default defineComponent ({
+  name: 'DashboardView',
+  components: {
+    PlaylistComparer
+  },
+  setup() {
+    const authStore = useAuthStore();
+
+    return {
+      authStore
+    }
+  }
+})
 </script>
 
 <style scoped>

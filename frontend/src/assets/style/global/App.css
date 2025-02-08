@@ -18,6 +18,17 @@ body {
   background-color: #33c7dd;
 }
 
+.disabled {
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+  background-color: gray !important;
+  color: darkgray !important;
+}
+
+.disabled:hover {
+  background-color: gray !important;
+}
+
 .coming_soon {
   position: relative;
   cursor: pointer;
