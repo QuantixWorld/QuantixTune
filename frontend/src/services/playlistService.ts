@@ -1,9 +1,9 @@
-import type { PlaylistItems, Playlists } from '@/types'
+import type { PlaylistTrack, SimplifiedPlaylist } from '@/types'
 import axiosInstance from './axiosInstance'
 
 export const fetchUserPlaylists = async () => {
   try {
-    const response = await axiosInstance.get<Playlists>('http://localhost:3000/playlists', {
+    const response = await axiosInstance.get<Array<SimplifiedPlaylist>>('http://localhost:3000/playlists', {
       withCredentials: true,
     })
 
@@ -16,7 +16,7 @@ export const fetchUserPlaylists = async () => {
 
 export const fetchTracksFromPlaylist = async (playlistId: string) => {
   try {
-    const response = await axiosInstance.get<PlaylistItems>('http://localhost:3000/playlists/tracks', {
+    const response = await axiosInstance.get<Array<PlaylistTrack>>('http://localhost:3000/playlists/tracks', {
       params: { playlistId },
       withCredentials: true
     });

@@ -1,5 +1,5 @@
 const express = require("express");
-const { spotifyRequest } = require("../utils/spotifyRequest");
+const { spotifyRequest, reversiveRequest } = require("../utils/spotifyRequest");
 const router = express.Router();
 
 router.get("/playlists", async (req, res) => {
@@ -8,7 +8,7 @@ router.get("/playlists", async (req, res) => {
   const offset = req.query.offset;
   if (!userId) return res.status(401).send("Unauthorized: Missing user ID");
 
-  const response = await spotifyRequest(userId, "get", "me/playlists", {
+  const response = await reversiveRequest(userId, "me/playlists", {
     limit,
     offset
   });
@@ -22,9 +22,9 @@ router.get("/playlists/tracks", async (req, res) => {
 
   if (!userId) return res.status(401).send("Unauthorized: Missing user ID");
 
-  const response = await spotifyRequest(userId, "get", "playlists/" + playlistId + "/tracks");
+  const response = await reversiveRequest(userId, `playlists/${playlistId}/tracks`);
 
   res.json(response);
-})
+});
 
 module.exports = router;

@@ -8,7 +8,7 @@
           <p class="button" v-else>Select</p>
         </div>
         <div id="pc_dropdown1" class="pc_dropdown scroll" v-if="dropdown1">
-          <div class="dropdown_item" v-for="playlist in playlists?.items" :key="playlist.id" @click.stop="selectPlaylist(1, playlist)">
+          <div class="dropdown_item" v-for="playlist in playlists" :key="playlist.id" @click.stop="selectPlaylist(1, playlist)">
             <PlaylistDisplay
               :playlist="playlist" class="pc__dropdown_playlist" />
           </div>
@@ -24,7 +24,7 @@
           <p class="button" v-else>Select</p>
         </div>
         <div id="pc_dropdown2" class="pc_dropdown scroll" v-if="dropdown2">
-          <div class="dropdown_item" v-for="playlist in playlists?.items" :key="playlist.id" @click.stop="selectPlaylist(2, playlist)">
+          <div class="dropdown_item" v-for="playlist in playlists" :key="playlist.id" @click.stop="selectPlaylist(2, playlist)">
             <PlaylistDisplay
               :playlist="playlist" class="pc__dropdown_playlist" />
           </div>
@@ -48,7 +48,7 @@
 <script lang="ts">
 import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import PlaylistDisplay from './PlaylistDisplay.vue';
-import type { Playlists, SimplifiedPlaylist, PlaylistItems, PlaylistTrack } from '@/types';
+import type { SimplifiedPlaylist, PlaylistTrack } from '@/types';
 import { fetchUserPlaylists, fetchTracksFromPlaylist } from '@/services/playlistService';
 import TrackDisplay from './TrackDisplay.vue';
 
@@ -59,7 +59,7 @@ export default defineComponent({
     TrackDisplay
   },
   setup() {
-    const playlists = ref<Playlists | null>(null);
+    const playlists = ref<Array<SimplifiedPlaylist> | null>(null);
 
     const dropdown1 = ref(false);
     const dropdown2 = ref(false);
@@ -67,8 +67,8 @@ export default defineComponent({
     const selectedPlaylist1 = ref<SimplifiedPlaylist | null>(null);
     const selectedPlaylist2 = ref<SimplifiedPlaylist | null>(null);
 
-    const trackInPlaylist1 = ref<PlaylistItems | null>(null);
-    const trackInPlaylist2 = ref<PlaylistItems | null>(null);
+    const trackInPlaylist1 = ref<Array<PlaylistTrack> | null>(null);
+    const trackInPlaylist2 = ref<Array<PlaylistTrack> | null>(null);
 
     const trackUniqueToPlaylist1 = ref<Array<PlaylistTrack> | null>(null);
     const trackUniqueToPlaylist2 = ref<Array<PlaylistTrack> | null>(null);
@@ -94,24 +94,27 @@ export default defineComponent({
 
     const getPlaylists = async () => {
       playlists.value = await fetchUserPlaylists();
+
     }
 
     const comparePlaylists = async () => {
       if (!selectedPlaylist1.value || !selectedPlaylist2.value) return;
 
+      trackInPlaylist1.value = null
+      trackInPlaylist2.value = null
+      trackUniqueToPlaylist1.value = null
+      trackUniqueToPlaylist2.value = null
+
       trackInPlaylist1.value = await fetchTracksFromPlaylist(selectedPlaylist1.value.id);
       trackInPlaylist2.value = await fetchTracksFromPlaylist(selectedPlaylist2.value.id);
 
-      if (trackInPlaylist1.value) {
-        trackUniqueToPlaylist1.value = trackInPlaylist1.value.items.filter(
-          track1 => !trackInPlaylist2.value?.items.some(track2 => track2.track.id === track1.track.id)
-        );
-      }
-      if (trackInPlaylist2.value) {
-        trackUniqueToPlaylist2.value = trackInPlaylist2.value.items.filter(
-          track2 => !trackInPlaylist1.value?.items.some(track1 => track1.track.id === track2.track.id)
-        );
-      }
+      trackUniqueToPlaylist1.value = trackInPlaylist1.value?.filter(
+        track1 => !trackInPlaylist2.value?.some(track2 => track2.track.id === track1.track.id)
+      );
+
+      trackUniqueToPlaylist2.value = trackInPlaylist2.value?.filter(
+        track2 => !trackInPlaylist1.value?.some(track1 => track1.track.id === track2.track.id)
+      );
     }
 
     const startPolling = () => {
