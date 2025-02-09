@@ -34,8 +34,9 @@
     justify-content: space-between;
 }
 
-.row1-2 {
+.pc_results-row {
     width: 250px;
+    max-height: 250px;
     overflow-y: auto;
 }
 

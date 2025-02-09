@@ -34,10 +34,10 @@
     <div id="pc_results">
       <h3>Results</h3>
       <div id="pc_results_tracks">
-        <div id="only_in1" class="row1-2 scroll">
+        <div id="only_in1" class="pc_results-row scroll">
           <TrackDisplay v-for="playlistTrack in trackUniqueToPlaylist1" :key="playlistTrack.id" :track="playlistTrack.track" />
         </div>
-        <div id="only_in2" class="row1-2 scroll">
+        <div id="only_in2" class="pc_results-row scroll">
           <TrackDisplay v-for="playlistTrack in trackUniqueToPlaylist2" :key="playlistTrack.id" :track="playlistTrack.track" />
         </div>
       </div>
@@ -103,12 +103,9 @@ export default defineComponent({
       trackInPlaylist2.value = await fetchTracksFromPlaylist(selectedPlaylist2.value.id);
 
       if (trackInPlaylist1.value) {
-        console.log(trackInPlaylist1.value)
         trackUniqueToPlaylist1.value = trackInPlaylist1.value.items.filter(
           track1 => !trackInPlaylist2.value?.items.some(track2 => track2.track.id === track1.track.id)
         );
-
-        trackUniqueToPlaylist1.value = trackUniqueToPlaylist1.value
       }
       if (trackInPlaylist2.value) {
         trackUniqueToPlaylist2.value = trackInPlaylist2.value.items.filter(
