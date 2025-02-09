@@ -16,7 +16,9 @@ async function spotifyRequest(
     throw new Error("No valid tokens found for user");
   }
 
-  const url = `https://api.spotify.com/v1/${endpoint}`;
+  const url = endpoint.startsWith("https://")
+    ? endpoint
+    : `https://api.spotify.com/v1/${endpoint}`;
 
   try {
     const config = {
@@ -45,4 +47,22 @@ async function spotifyRequest(
   }
 }
 
-module.exports = { spotifyRequest };
+async function reversiveRequest(userId, endpoint, params = {}, arrayKey= "items") {
+  let allItems = [];
+  let nextUrl = endpoint;
+  let currentParams = params;
+
+  while (nextUrl) {
+    const data = await spotifyRequest(userId, "get", nextUrl, currentParams);
+
+    allItems = allItems.concat(data[arrayKey]);
+
+    nextUrl = data.next;
+
+    currentParams = {};
+  }
+
+  return allItems;
+}
+
+module.exports = { spotifyRequest, reversiveRequest };

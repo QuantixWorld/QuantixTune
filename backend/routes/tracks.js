@@ -1,6 +1,14 @@
 const express = require("express");
-const { spotifyRequest } = require("../utils/spotifyRequest");
+const { spotifyRequest, reversiveRequest } = require("../utils/spotifyRequest");
 const router = express.Router();
+
+router.get("/tracks", async (req, res) => {
+  const userId = req.cookies.userId;
+  if (!userId) return res.status(401).send("Unauthorized: Missing user ID");
+
+  const response = await reversiveRequest(userId, "me/tracks");
+  res.status(200).json(response);
+})
 
 router.get("/is-liked", async (req, res) => {
   const userId = req.cookies.userId;

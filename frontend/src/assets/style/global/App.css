@@ -12,9 +12,21 @@ body {
   color: white;
   border-radius: 4px;
   text-decoration: none;
+  cursor: pointer;
 }
 .button:hover {
   background-color: #33c7dd;
+}
+
+.disabled {
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+  background-color: gray !important;
+  color: darkgray !important;
+}
+
+.disabled:hover {
+  background-color: gray !important;
 }
 
 .coming_soon {
@@ -44,4 +56,13 @@ body {
 
 .coming_soon:hover::after {
   opacity: 1;
+}
+
+.scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+  background-color: #404040;
+  border-radius: 4px;
 }

@@ -1,2 +1,2 @@
 export * from './request'
-export * from './Spotify'
+export * from './spotify'

@@ -9,7 +9,6 @@ export const useAuthStore = defineStore('auth', {
         async checkAuthStatus() {
             try {
                 const response = await axiosInstance.get('http://localhost:3000/auth-status', { withCredentials: true });
-                console.log(response.data.loggedIn)
                 this.isLoggedIn = response.data.loggedIn;
             } catch {
                 this.isLoggedIn = false

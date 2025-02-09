@@ -11,12 +11,11 @@
 <script lang="ts">
 import LogoutButton from './components/tools/LogoutButton.vue';
 import LoginButton from './components/tools/LoginButton.vue';
-import MainNavbar from './components/tools/MainNavbar.vue'
-import MusicPlayer from './components/tools/MusicPlayer.vue'
+import MainNavbar from './components/tools/MainNavbar.vue';
+import MusicPlayer from './components/tools/MusicPlayer.vue';
 import { useAuthStore } from './stores/authStore';
 
-import axios from 'axios'
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 
 export default {
   name: 'App',
