@@ -1,4 +1,4 @@
-import type { Playlists } from '@/types'
+import type { PlaylistItems, Playlists } from '@/types'
 import axiosInstance from './axiosInstance'
 
 export const fetchUserPlaylists = async () => {
@@ -16,7 +16,7 @@ export const fetchUserPlaylists = async () => {
 
 export const fetchTracksFromPlaylist = async (playlistId: string) => {
   try {
-    const response = await axiosInstance.get('http://localhost:3000/playlists/[tracks]', {
+    const response = await axiosInstance.get<PlaylistItems>('http://localhost:3000/playlists/tracks', {
       params: { playlistId },
       withCredentials: true
     });

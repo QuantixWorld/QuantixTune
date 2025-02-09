@@ -1,5 +1,5 @@
 <template>
-  <div ref="scrollContainerRef" id="music-list">
+  <div ref="scrollContainerRef" id="music-list" class="scroll">
     <div id="recently-played" class="section" v-if="recentlyPlayed">
       <TrackDisplay v-for="track in recentlyPlayed?.items" :key="track.track.id" :track="track.track" />
     </div>

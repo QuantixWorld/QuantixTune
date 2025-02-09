@@ -57,3 +57,12 @@ body {
 .coming_soon:hover::after {
   opacity: 1;
 }
+
+.scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+  background-color: #404040;
+  border-radius: 4px;
+}

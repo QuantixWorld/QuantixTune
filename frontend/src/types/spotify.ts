@@ -2,6 +2,17 @@ export interface ExternalUrl {
   spotify: string
 }
 
+export interface ExternalIds {
+  isrc: string
+  ean: string
+  upc: string
+}
+
+export interface Followers {
+  href: string
+  total: number
+}
+
 export interface Image {
   url: string
   height: number
@@ -49,17 +60,22 @@ export interface Track {
   disc_number: number
   duration_ms: number
   explicit: boolean
-  external_ids: { isrc: string }
+  external_ids: ExternalIds
   external_urls: ExternalUrl
   href: string
   id: string
-  is_local: boolean
+  is_playable: boolean
+  linked_from: object
+  restrictions: {
+    reason: string
+  }
   name: string
   popularity: number
   preview_url: string
   track_number: number
   type: string
   uri: string
+  is_local: boolean
 }
 
 export interface SimplifiedArtist {
@@ -81,10 +97,7 @@ export interface SimplifiedPlaylist {
   name: string
   owner: {
     external_urls: ExternalUrl
-    followers: {
-      href: string
-      total: number
-    }
+    followers: Followers
     href: string
     id: string
     type: string
@@ -99,4 +112,17 @@ export interface SimplifiedPlaylist {
   }
   type: string
   uri: string
+}
+
+export interface PlaylistTrack {
+  added_at: string
+  added_by: {
+    external_urls: ExternalUrl
+    followers: Followers
+  }
+  href: string
+  id: string
+  type: string
+  uri: string
+  track: Track
 }

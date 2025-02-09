@@ -3,7 +3,8 @@ import type {
   Context,
   Track,
   SimplifiedPlaylist,
-  ExternalUrl
+  ExternalUrl,
+  PlaylistTrack
 } from './spotify'
 
 export interface PlayerState {
@@ -56,4 +57,14 @@ export interface Playlists {
   previous: string
   total: number
   items: Array<SimplifiedPlaylist>
+}
+
+export interface PlaylistItems {
+  href: string
+  limit: number
+  next: string
+  offset: number
+  previous: string
+  total: number
+  items: Array<PlaylistTrack>
 }

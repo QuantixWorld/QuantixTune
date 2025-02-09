@@ -29,9 +29,14 @@
     margin-right: 10px;
 }
 
-#pc_results_playlists {
+#pc_results_tracks {
     display: flex;
     justify-content: space-between;
+}
+
+.row1-2 {
+    width: 250px;
+    overflow-y: auto;
 }
 
 .pc_playlist-display:hover {
@@ -59,15 +64,6 @@
     flex-direction: column;
     overflow-y: auto;
     z-index: 9999;
-}
-
-.pc_dropdown::-webkit-scrollbar {
-    width: 8px;
-}
-
-.pc_dropdown::-webkit-scrollbar-thumb {
-    background-color: #404040;
-    border-radius: 4px;
 }
 
 .pc__dropdown_playlist:hover {

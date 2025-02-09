@@ -24,7 +24,7 @@ router.delete("/logout", function (req, res) {
 router.get("/login", function (req, res) {
   var state = generateRandomString(16);
   var scope =
-    "user-read-private user-read-email user-read-playback-state user-modify-playback-state user-library-read user-library-modify user-read-recently-played";
+    "user-read-private user-read-email user-read-playback-state user-modify-playback-state user-library-read user-library-modify user-read-recently-played playlist-read-private";
 
   const client_id = process.env.SPOTIFY_CLIENT_ID;
   const redirect_uri = "http://localhost:3000/callback";

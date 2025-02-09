@@ -7,7 +7,7 @@
           <PlaylistDisplay :key="selectedPlaylist1.id" :playlist="selectedPlaylist1" class="pc_playlist" v-if="selectedPlaylist1" />
           <p class="button" v-else>Select</p>
         </div>
-        <div id="pc_dropdown1" class="pc_dropdown" v-if="dropdown1">
+        <div id="pc_dropdown1" class="pc_dropdown scroll" v-if="dropdown1">
           <div class="dropdown_item" v-for="playlist in playlists?.items" :key="playlist.id" @click.stop="selectPlaylist(1, playlist)">
             <PlaylistDisplay
               :playlist="playlist" class="pc__dropdown_playlist" />
@@ -23,7 +23,7 @@
           <PlaylistDisplay :key="selectedPlaylist2.id" :playlist="selectedPlaylist2" class="pc_playlist" v-if="selectedPlaylist2" />
           <p class="button" v-else>Select</p>
         </div>
-        <div id="pc_dropdown2" class="pc_dropdown" v-if="dropdown2">
+        <div id="pc_dropdown2" class="pc_dropdown scroll" v-if="dropdown2">
           <div class="dropdown_item" v-for="playlist in playlists?.items" :key="playlist.id" @click.stop="selectPlaylist(2, playlist)">
             <PlaylistDisplay
               :playlist="playlist" class="pc__dropdown_playlist" />
@@ -33,12 +33,12 @@
     </div>
     <div id="pc_results">
       <h3>Results</h3>
-      <div id="pc_results_playlists">
-        <div id="only_in1">
-          <TrackDisplay v-for="track in trackUniqueToPlaylist1" :key="track.id" :track="track" />
+      <div id="pc_results_tracks">
+        <div id="only_in1" class="row1-2 scroll">
+          <TrackDisplay v-for="playlistTrack in trackUniqueToPlaylist1" :key="playlistTrack.id" :track="playlistTrack.track" />
         </div>
-        <div id="only_in2">
-          <TrackDisplay v-for="track in trackUniqueToPlaylist2" :key="track.id" :track="track" />
+        <div id="only_in2" class="row1-2 scroll">
+          <TrackDisplay v-for="playlistTrack in trackUniqueToPlaylist2" :key="playlistTrack.id" :track="playlistTrack.track" />
         </div>
       </div>
     </div>
@@ -48,14 +48,15 @@
 <script lang="ts">
 import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import PlaylistDisplay from './PlaylistDisplay.vue';
-import type { Track, Playlists, SimplifiedPlaylist } from '@/types';
+import type { Playlists, SimplifiedPlaylist, PlaylistItems, PlaylistTrack } from '@/types';
 import { fetchUserPlaylists, fetchTracksFromPlaylist } from '@/services/playlistService';
 import TrackDisplay from './TrackDisplay.vue';
 
 export default defineComponent({
   name: 'PlaylistComparer',
   components: {
-    PlaylistDisplay
+    PlaylistDisplay,
+    TrackDisplay
   },
   setup() {
     const playlists = ref<Playlists | null>(null);
@@ -66,11 +67,11 @@ export default defineComponent({
     const selectedPlaylist1 = ref<SimplifiedPlaylist | null>(null);
     const selectedPlaylist2 = ref<SimplifiedPlaylist | null>(null);
 
-    const trackInPlaylist1 = ref<Array<Track> | null>(null);
-    const trackInPlaylist2 = ref<Array<Track> | null>(null);
+    const trackInPlaylist1 = ref<PlaylistItems | null>(null);
+    const trackInPlaylist2 = ref<PlaylistItems | null>(null);
 
-    const trackUniqueToPlaylist1 = ref<Array<Track> | null>(null);
-    const trackUniqueToPlaylist2 = ref<Array<Track> | null>(null);
+    const trackUniqueToPlaylist1 = ref<Array<PlaylistTrack> | null>(null);
+    const trackUniqueToPlaylist2 = ref<Array<PlaylistTrack> | null>(null);
 
     const playerInterval = ref<number | null>(null);
 
@@ -101,6 +102,19 @@ export default defineComponent({
       trackInPlaylist1.value = await fetchTracksFromPlaylist(selectedPlaylist1.value.id);
       trackInPlaylist2.value = await fetchTracksFromPlaylist(selectedPlaylist2.value.id);
 
+      if (trackInPlaylist1.value) {
+        console.log(trackInPlaylist1.value)
+        trackUniqueToPlaylist1.value = trackInPlaylist1.value.items.filter(
+          track1 => !trackInPlaylist2.value?.items.some(track2 => track2.track.id === track1.track.id)
+        );
+
+        trackUniqueToPlaylist1.value = trackUniqueToPlaylist1.value
+      }
+      if (trackInPlaylist2.value) {
+        trackUniqueToPlaylist2.value = trackInPlaylist2.value.items.filter(
+          track2 => !trackInPlaylist1.value?.items.some(track1 => track1.track.id === track2.track.id)
+        );
+      }
     }
 
     const startPolling = () => {

@@ -23,10 +23,12 @@
   font-size: 14px;
   font-weight: bold;
   margin: 0;
+  text-align: left;
 }
 
 .track-artists {
   font-size: 12px;
   color: #b3b3b3;
   margin: 0;
+  text-align: left;
 }
