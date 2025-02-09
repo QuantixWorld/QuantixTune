@@ -15,7 +15,7 @@
         </div>
       </div>
       <p class="button" :class="{
-        'disabled': dropdown1 || dropdown2 || !selectedPlaylist1 || !selectedPlaylist2 || selectedPlaylist1.id === selectedPlaylist2.id
+        'disabled': dropdown1 || dropdown2 || !selectedPlaylist1 || !selectedPlaylist2 || selectedPlaylist1.id === selectedPlaylist2.id || comparing
       }"
       @click="comparePlaylists">Compare</p>
       <div class="pc_selector">
@@ -49,7 +49,7 @@
 import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import PlaylistDisplay from './PlaylistDisplay.vue';
 import type { SimplifiedPlaylist, PlaylistTrack } from '@/types';
-import { fetchUserPlaylists, fetchTracksFromPlaylist } from '@/services/playlistService';
+import { fetchUserPlaylists, fetchTracksFromPlaylist, createLIkedSongsPLaylist, fetchSavedTracks } from '@/services/playlistService';
 import TrackDisplay from './TrackDisplay.vue';
 
 export default defineComponent({
@@ -75,6 +75,8 @@ export default defineComponent({
 
     const playerInterval = ref<number | null>(null);
 
+    const comparing = ref(false)
+
     const toggleDropdown = (index: number) => {
       if (index === 1) {
         dropdown1.value = !dropdown1.value;
@@ -93,20 +95,30 @@ export default defineComponent({
     }
 
     const getPlaylists = async () => {
-      playlists.value = await fetchUserPlaylists();
-
+      playlists.value = [createLIkedSongsPLaylist(), ...(await fetchUserPlaylists())]
     }
 
     const comparePlaylists = async () => {
       if (!selectedPlaylist1.value || !selectedPlaylist2.value) return;
+
+      comparing.value = true;
 
       trackInPlaylist1.value = null
       trackInPlaylist2.value = null
       trackUniqueToPlaylist1.value = null
       trackUniqueToPlaylist2.value = null
 
-      trackInPlaylist1.value = await fetchTracksFromPlaylist(selectedPlaylist1.value.id);
-      trackInPlaylist2.value = await fetchTracksFromPlaylist(selectedPlaylist2.value.id);
+      if (selectedPlaylist1.value.id != "liked-songs") {
+        trackInPlaylist1.value = await fetchTracksFromPlaylist(selectedPlaylist1.value.id);
+      } else {
+        trackInPlaylist1.value = await fetchSavedTracks();
+      }
+
+      if (selectedPlaylist2.value.id != "liked-songs") {
+        trackInPlaylist2.value = await fetchTracksFromPlaylist(selectedPlaylist2.value.id);
+      } else {
+        trackInPlaylist2.value = await fetchSavedTracks();
+      }
 
       trackUniqueToPlaylist1.value = trackInPlaylist1.value?.filter(
         track1 => !trackInPlaylist2.value?.some(track2 => track2.track.id === track1.track.id)
@@ -115,6 +127,8 @@ export default defineComponent({
       trackUniqueToPlaylist2.value = trackInPlaylist2.value?.filter(
         track2 => !trackInPlaylist1.value?.some(track1 => track1.track.id === track2.track.id)
       );
+
+      comparing.value = false;
     }
 
     const startPolling = () => {
@@ -152,7 +166,8 @@ export default defineComponent({
       selectedPlaylist2,
       comparePlaylists,
       trackUniqueToPlaylist1,
-      trackUniqueToPlaylist2
+      trackUniqueToPlaylist2,
+      comparing
     }
   },
 })

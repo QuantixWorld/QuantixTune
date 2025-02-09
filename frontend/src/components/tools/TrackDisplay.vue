@@ -1,7 +1,7 @@
 <template>
   <div class="track-display">
     <img :src="track.is_local
-          ? 'src/assets/images/local_file_icon.svg'
+          ? 'src/assets/images/default_icon.svg'
           : track.album.images[2]?.url" alt="Track Image" class="track-image" />
         <div class="track-details">
           <p class="track-title">{{ track.name }}</p>
