@@ -1,5 +1,5 @@
 <template>
-  <div v-if="playerState" id="player">
+  <div v-if="playerState" class="player">
     <div id="player_content">
       <div id="track">
         <img
@@ -111,7 +111,7 @@
     </div>
     <MusicList v-if="listVisible"/>
   </div>
-  <div v-else id="no_playerState">
+  <div v-else class="player">
     <p>Unable to display the player at the moment</p>
   </div>
 </template>

@@ -32,7 +32,7 @@
       </div>
     </div>
     <div id="pc_results">
-      <h3>Results</h3>
+      <h3>{{ comparing ? "Results loading..." : "Results" }}</h3>
       <div id="pc_results_tracks">
         <div id="only_in1" class="pc_results-row scroll">
           <TrackDisplay v-for="playlistTrack in trackUniqueToPlaylist1" :key="playlistTrack.id" :track="playlistTrack.track" />
