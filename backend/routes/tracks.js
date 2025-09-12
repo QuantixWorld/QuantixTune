@@ -20,7 +20,7 @@ router.get("/is-liked", async (req, res) => {
     ids,
   });
 
-  const isLiked = response[0];
+  const isLiked = response;
   res.status(200).send(isLiked);
 });
 

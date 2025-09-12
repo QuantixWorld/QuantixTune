@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { useAuthStore } from '@/stores/authStore';
-import router from '@/router';
 
 const axiosInstance = axios.create({
   baseURL: 'http://localhost:3000',

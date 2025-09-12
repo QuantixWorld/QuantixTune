@@ -32,3 +32,14 @@
   margin: 0;
   text-align: left;
 }
+
+.track-icons {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.track-icons i {
+  margin-left: 10px;
+  cursor: pointer;
+}

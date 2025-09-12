@@ -16,7 +16,7 @@
         </div>
         <div id="track-icons">
           <i v-if="playerState.item.is_local" class="fa-solid fa-triangle-exclamation"></i>
-          <i v-else-if="isCurrentTrackLiked" class="fa-solid fa-heart" @click="unsaveTrack"></i>
+          <i v-else-if="isCurrentTrackLiked && isCurrentTrackLiked[0]" class="fa-solid fa-heart" @click="unsaveTrack"></i>
           <i v-else class="fa-regular fa-heart" @click="saveTrack"></i>
           <i class="fa-regular fa-square-plus coming_soon"></i>
         </div>
@@ -109,11 +109,11 @@
       </div>
       <p id="time_length">{{ formatTime(playerState?.item.duration_ms || 0) }}</p>
     </div>
-    <MusicList v-if="listVisible"/>
   </div>
   <div v-else class="player">
     <p>Unable to display the player at the moment</p>
   </div>
+  <MusicList v-if="listVisible"/>
 </template>
 
 <script lang="ts">
